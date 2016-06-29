@@ -1,0 +1,11 @@
+{
+  "koa": {
+    "hostname": "localhost",
+    "port": 3000
+  },
+  "logger": {
+    "colorize": true,
+    "level": "debug",
+    "timestamp": "YYYY-MM-DD HH:mm:ss,SSS"
+  }
+}
