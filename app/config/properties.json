@@ -1,11 +1,25 @@
 {
   "koa": {
     "hostname": "localhost",
-    "port": 3000
+    "port": 3000,
+    "namespace": "/geobra"
   },
   "logger": {
     "colorize": true,
     "level": "debug",
     "timestamp": "YYYY-MM-DD HH:mm:ss,SSS"
+  },
+  "jwt": {
+    "options": {
+      "secret": "<f^;:VJ6zB)(3pKk",
+      "algorithm": "HS256",
+      "expiresIn": "24h"
+    }
+  },
+  "mssql": {
+    "user": "geobra",
+    "password": "geobra70080",
+    "server": "52.32.15.133",
+    "database": "geobra"
   }
 }

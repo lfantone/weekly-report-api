@@ -25,7 +25,7 @@ nconf
     },
     jwt: {
       unless: {
-        path: [/\/status$/]
+        path: [/\/status$/, /\/login$/]
       }
     }
   });

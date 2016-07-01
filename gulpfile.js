@@ -19,7 +19,7 @@ $.release.register(gulp);
  *
  * `gulp nodemon`
  */
-gulp.task('nodemon', () => {
+gulp.task('nodemon', (cb) => {
   process.env.NODE_ENV = 'development';
   var debug = argv.debug || argv.debugBrk;
   var options = _.defaults(config.nodemon, {
@@ -41,7 +41,9 @@ gulp.task('nodemon', () => {
     options.nodeArgs.push('--' + (argv.debug ? 'debug' : 'debug-brk') + '=' + config.debug.debugPort);
   }
 
-  return $.nodemon(options)
+  process.once('SIGINT', cb);
+
+  $.nodemon(options)
     .on('restart', function() {
       $.util.log('nodemon restarted');
     })
@@ -85,9 +87,7 @@ gulp.task('debug', (cb) => {
  *
  * `gulp watch`
  */
-gulp.task('watch', () => {
-  gulp.watch(config.paths.src, ['validate']);
-});
+gulp.task('watch', () => gulp.watch(config.paths.src, ['validate']));
 
 /**
  * Runs unit tests and writes out
