@@ -10,7 +10,6 @@
 const Joi = require('joi');
 const validate = require('koa-joi-schema');
 const co = require('bluebird').coroutine;
-const validationError = require('middlewares/joi-validation-error');
 const authenticator = require('services/authenticator');
 const users = require('services/users');
 
@@ -29,7 +28,7 @@ module.exports = function(router) {
    * is provided in the response as:
    *   { "success": true, "token": <jwt> } (HTTP 200).
    */
-  router.post('/login', validationError(), validator, (ctx, next) => co(function * () {
+  router.post('/login', validator, (ctx, next) => co(function * () {
     try {
       // Fetch user from given credentials
       var user = yield users.login(ctx.request.body.username,
