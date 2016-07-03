@@ -15,6 +15,7 @@ const STATES = {
   '90002': 'red'
 };
 
+// Module API
 module.exports = {
   getAllFor,
   getOneFor
@@ -27,9 +28,8 @@ function toTenders(result) {
       type: t.tipo,
       establishment: t.establecimiento,
       code: t[''],
-      program: 'MISSING',
       state: t.estadoUltimoInforme ? {
-        id: t.estadoUltimoInforme,
+        id: Number(t.estadoUltimoInforme),
         value: STATES[t.estadoUltimoInforme]
       } : null
     };
