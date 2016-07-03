@@ -18,7 +18,9 @@ nconf
   })
   .defaults({
     koa: {
-      routes: path.join(__dirname, '..', 'routes')
+      routes: {
+        root: path.join(__dirname, '..', 'routes')
+      }
     },
     logger: {
       label: pck.name

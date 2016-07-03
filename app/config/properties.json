@@ -2,12 +2,16 @@
   "koa": {
     "hostname": "localhost",
     "port": 3000,
-    "namespace": "/geobra"
+    "routes": {
+      "prefix": "/geobra"
+    }
   },
   "logger": {
     "colorize": true,
     "level": "debug",
-    "timestamp": "YYYY-MM-DD HH:mm:ss,SSS"
+    "timestamp": "YYYY-MM-DD HH:mm:ss,SSS",
+    "handleExceptions": true,
+    "humanReadableUnhandledException": true
   },
   "jwt": {
     "options": {

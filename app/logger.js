@@ -14,10 +14,5 @@ options.timestamp = function() {
   return moment().format(config.get('logger:timestamp'));
 };
 
-var logger = new winston.Logger({
-  transports: [
-    new winston.transports.Console(options)
-  ]
-});
-
-module.exports = logger;
+winston.remove(winston.transports.Console);
+module.exports = winston.add(winston.transports.Console, options);
