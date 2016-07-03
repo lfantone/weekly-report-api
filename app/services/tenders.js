@@ -4,7 +4,6 @@
  *
  * @module services/tenders
  */
-const _ = require('lodash');
 const sql = require('mssql');
 const connection = require('./mssql-connection');
 
@@ -20,7 +19,7 @@ module.exports = {
   getOneFor
 };
 
-function mapResultToTenders(result) {
+function toTenders(result) {
   return result.map((t) => {
     return {
       id: t.id,
@@ -36,6 +35,16 @@ function mapResultToTenders(result) {
   });
 }
 
+function toTenderDetail(result) {
+  return {
+    code: result[''][result[''].length - 1],
+    cue: result[''][0],
+    establishment: result.establecimiento,
+    type: result.tipo[0],
+    lastReport: result.FechaInformeAnterior
+  };
+}
+
 /**
  * Finds and returns all tenders associated
  * with a given `user`.
@@ -49,20 +58,30 @@ function getAllFor(user) {
       .input('idsite', sql.Int, ID_SITE)
       .input('idinspector', sql.Int, user.id)
       .execute('licitacion_inspector_lista')
-      .then((result) => mapResultToTenders(result[0])));
+      .then((result) => toTenders(result[0])));
 }
 
+/**
+ * Returns details about a single tender
+ * given its `id`
+ * @param  {Number|String} id   Tender identifier
+ * @param  {Object} user The user whose tenders are being looked up
+ * @return {Promise}
+ */
 function getOneFor(id, user) {
   id = Number(id);
-  return getAllFor(user)
-    .then((tenders) => {
-      var tender = _.find(tenders, ['id', id]);
-      if (!tender) {
-        let notFound = new Error(`No tender of id ${id} found for user <${user.usuario}>`);
-        notFound.name = 'NotFound';
-        notFound.status = 404;
-        throw notFound;
-      }
-      return tender;
-    });
+  return connection.acquire()
+    .then((conn) => new sql.Request(conn)
+      .input('idsite', sql.Int, ID_SITE)
+      .input('idlicitacion', sql.Int, id)
+      .execute('licitacion_detalle_informesemanal')
+      .then((result) => {
+        if (!result[0][0]) {
+          let notFound = new Error(`No tender of id ${id} found for user <${user.usuario}>`);
+          notFound.name = 'NotFound';
+          notFound.status = 404;
+          throw notFound;
+        }
+        return toTenderDetail(result[0][0]);
+      }));
 }
