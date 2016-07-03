@@ -10,6 +10,8 @@ const path = require('path');
 const pck = require(path.join('..', '..', 'package'));
 const nconf = require('nconf');
 
+const DEFAULT_ENVIRONMENT = 'development';
+
 nconf
   .env('_')
   .argv()
@@ -29,7 +31,8 @@ nconf
       unless: {
         path: [/\/status$/, /\/login$/]
       }
-    }
+    },
+    environment: process.env.NODE_ENV || DEFAULT_ENVIRONMENT
   });
 
 module.exports = nconf;
