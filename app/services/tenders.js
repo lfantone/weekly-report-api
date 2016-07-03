@@ -40,6 +40,10 @@ function toTenderDetail(result) {
   return {
     code: _.last(result['']),
     cue: result[''][0],
+    progress: {
+      last: Number(result[''][1]),
+      delta: Number(result[''][2])
+    },
     title: _.last(result.tipo),
     establishment: result.establecimiento,
     type: result.tipo[0],
