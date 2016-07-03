@@ -4,6 +4,7 @@
  *
  * @module services/tenders
  */
+const _ = require('lodash');
 const sql = require('mssql');
 const connection = require('./mssql-connection');
 
@@ -27,18 +28,19 @@ function toTenders(result) {
       establishment: t.establecimiento,
       code: t[''],
       program: 'MISSING',
-      state: {
+      state: t.estadoUltimoInforme ? {
         id: t.estadoUltimoInforme,
         value: STATES[t.estadoUltimoInforme]
-      }
+      } : null
     };
   });
 }
 
 function toTenderDetail(result) {
   return {
-    code: result[''][result[''].length - 1],
+    code: _.last(result['']),
     cue: result[''][0],
+    title: _.last(result.tipo),
     establishment: result.establecimiento,
     type: result.tipo[0],
     lastReport: result.FechaInformeAnterior
