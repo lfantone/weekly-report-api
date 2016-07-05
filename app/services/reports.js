@@ -11,13 +11,13 @@ const connection = require('./mssql-connection');
 
 const ID_SITE = 3;
 const DOW = {
-  'lunes': 'monday',
-  'martes': 'tuesday',
-  'miercoles': 'wednesday',
-  'jueves': 'thursday',
-  'viernes': 'friday',
-  'sabado': 'saturday',
-  'domingo': 'sunday'
+  'monday': 'lunes',
+  'tuesday': 'martes',
+  'wednesday': 'miercoles',
+  'thursday': 'jueves',
+  'friday': 'viernes',
+  'saturday': 'sabado',
+  'sunday': 'domingo'
 };
 
 // Module API
@@ -38,21 +38,21 @@ function addDailyInput(request, value, day, name) {
 }
 
 function addWeeklyInputs(request, value, name) {
-  return _.values(DOW).forEach((day) => addDailyInput(request, value, day, name));
+  return _.keys(DOW).forEach((day) => addDailyInput(request, value, day, name));
 }
 
 function addAuditInputs(request, audits) {
   return audits.forEach((audit, i) => {
-    request.input(`idtipo_auditoriasector${i}`, sql.Int, audit.id)
-      .input(`auditoriafecha${i}`, sql.VarChar(20), formatDate(audit.date));
+    request.input(`idtipo_auditoriasector${i + 1}`, sql.Int, audit.value)
+      .input(`auditoriafecha${i + 1}`, sql.VarChar(20), formatDate(audit.date));
   });
 }
 
 function addPhotoInputs(request, photos) {
   return photos.forEach((photo, i) => {
-    request.input(`foto${i}`, sql.VarBinary(sql.MAX), photo.data)
-      .input(`fototitulo${i}`, sql.VarChar(50), photo.title)
-      .input(`fotocomentario${i}`, sql.VarChar(200), photo.comment);
+    request.input(`foto${i + 1}`, sql.VarBinary(sql.MAX), photo.data)
+      .input(`fototitulo${i + 1}`, sql.VarChar(50), photo.title)
+      .input(`fotocomentario${i + 1}`, sql.VarChar(200), photo.comment);
   });
 }
 
@@ -72,7 +72,7 @@ function save(report, user) {
       .input('fecha', sql.VarChar(20), formatDate(report.date))
       .input('idtipo_estadoobra', sql.Int, report.state.state)
       .input('idtipo_estadorazon', sql.Int, report.state.reason)
-      .input('comentario', sql.Int, report.state.comment)
+      .input('comentario', sql.VarChar(20), report.state.comment)
       .input('idtipo_avancerazon', sql.Int, report.progress.reason)
       .input('idtipo_contratistacalidad', sql.Int, report.evaluation.quality)
       .input('idtipo_contratistaconcepto', sql.Int, report.evaluation.concept)
@@ -80,8 +80,8 @@ function save(report, user) {
       .input('cantordenes', sql.Int, report.doc.quantity)
       .input('idusuariom', sql.Int, user.id);
 
-      addWeeklyInputs(request, report.forecast, 'visita');
-      addWeeklyInputs(request, report.rain, 'lluvia');
+      addWeeklyInputs(request, report.forecast.inspector, 'visita');
+      addWeeklyInputs(request, report.forecast.rain, 'lluvia');
       addAuditInputs(request, report.audits);
       addPhotoInputs(request, report.photos);
 
